@@ -69,7 +69,7 @@ def predict_fn(input_data, model):
     #       You should produce two variables:
     #         data_X   - A sequence of length 500 which represents the converted review
     #         data_len - The length of the review
-    converted_data, length = convert_and_pad(word_dict, sentence)
+    converted_data, length = convert_and_pad(word_dict, input_data)
     data_X = converted_data
     data_len = length
 
@@ -86,7 +86,7 @@ def predict_fn(input_data, model):
 
     # TODO: Compute the result of applying the model to the input data. The variable `result` should
     #       be a numpy array which contains a single integer which is either 1 or 0
-
-    result = None
+       
+    result = model(data).cpu().numpy()
 
     return result
