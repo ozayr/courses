@@ -25,7 +25,7 @@ def model_fn(model_dir):
 
     # Determine the device and construct the model.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = LSTMClassifier(model_info['embedding_dim'], model_info['hidden_dim'], model_info['vocab_size'])
+    model = LSTMClassifier(model_info['embedding_dim'], model_info['hidden_dim'],model_info['num_layers'], model_info['vocab_size'])
 
     # Load the stored model parameters.
     model_path = os.path.join(model_dir, 'model.pth')
@@ -66,10 +66,29 @@ def train(model, train_loader, epochs, optimizer, loss_fn, device):
     loss_fn      - The loss function used for training.
     device       - Where the model and data should be loaded (gpu or cpu).
     """
-    
-    # TODO: Paste the train() method developed in the notebook here.
-
-    pass
+   
+    for epoch in range(1, epochs + 1):
+        model.train()
+        total_loss = 0
+        for batch in train_loader:         
+            batch_X, batch_y = batch
+            
+            batch_X = batch_X.to(device)
+            batch_y = batch_y.to(device)
+            
+            # TODO: Complete this train method to train the model provided.
+            sentiments = model(batch_X)
+            loss = loss_fn(sentiments , batch_y)
+            
+            optimizer.zero_grad()
+            loss.backward()
+            nn.utils.clip_grad_norm_(model.parameters(), clip)
+            optimizer.step()
+            
+            
+            total_accuracy += f1_score(np.round(sentiments.data.cpu().numpy()).astype(np.int) ,batch_y.data.cpu().numpy().astype(np.int) ,average = 'macro')
+            total_loss += loss.data.item()
+        print(f"Epoch: {epoch}, BCELoss: {total_loss / len(train_loader)} Accuracy:{ total_accuracy / len(train_loader)}")
 
 
 if __name__ == '__main__':
