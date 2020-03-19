@@ -14,7 +14,7 @@ class LSTMClassifier(nn.Module):
         self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
              
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, num_layers , dropout = 0.5)
-        self.dropout = nn.Dropout(0.4)
+        self.dropout = nn.Dropout(0.3)
         self.dense = nn.Linear(in_features=hidden_dim, out_features=1)
 #         self.dense_p = nn.Linear(in_features=hidden_dim, out_features=100)
         self.sig = nn.Sigmoid()
